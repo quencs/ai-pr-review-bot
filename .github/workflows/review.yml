@@ -1,0 +1,24 @@
+name: AI PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -Ls https://astral.sh/uv/install.sh | sh
+
+      - name: Install deps
+        run: uv pip install requests
+
+      - name: Get diff
+        run: git diff origin/${{ github.base_ref }} > diff.txt
+
+      - name: Run review
+        run: python review.py diff.txt
