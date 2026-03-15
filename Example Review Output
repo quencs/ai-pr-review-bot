@@ -1,0 +1,13 @@
+AI Review Summary
+
+Potential issues detected:
+
+• Possible unsafe subprocess usage
+• Missing error handling in file operations
+• Performance issue in loop iteration
+
+Suggestions:
+
+- Add context timeout
+- Improve error handling
+- Replace blocking operations
