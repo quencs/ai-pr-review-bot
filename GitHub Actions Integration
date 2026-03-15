@@ -1,0 +1,12 @@
+name: AI Review
+
+on:
+  pull_request:
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: python cli/review_pr.py
