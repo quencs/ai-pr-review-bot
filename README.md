@@ -1,22 +1,43 @@
 # AI PR Review Bot
 
-Open-source AI code review bot using:
+AI-powered pull request reviewer for GitHub.
+
+Automatically reviews pull requests using a local LLM and posts feedback directly on PRs.
+
+Built with:
 
 - vLLM
 - GitHub Actions
+- Python
 - Local LLM
+
+---
 
 ## Features
 
 - automatic PR review
 - hallucination filtering
-- repo-aware review
-- line suggestions
+- repo-aware analysis
+- security risk detection
+- performance suggestions
+- line-by-line improvement suggestions
+
+---
+
+## Architecture
+
+PR → diff analysis → symbol index → risk detection → AI review → GitHub comment
+
+This design prevents LLM hallucinations by restricting analysis to real repository symbols.
+
+---
 
 ## Quickstart
 
-git clone https://github.com/yourname/ai-pr-review-bot
+```bash
+git clone https://github.com/quencs/ai-pr-review-bot
+cd ai-pr-review-bot
 
-run:
+pip install -r requirements.txt
 
-make run
+python cli/review_pr.py
