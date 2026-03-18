@@ -1,15 +1,13 @@
-# AI PR Review Bot
+# AI PR Review Bot — Automatic Code Reviews with Local LLMs
 
-AI-powered pull request reviewer for GitHub.
+Lightweight, open-source AI reviewer that comments directly on pull requests.
 
-Automatically reviews pull requests using a local LLM and posts feedback directly on PRs.
-
-Built with:
-
-- vLLM
+Works with:
 - GitHub Actions
+- Local LLM (vLLM)
 - Python
-- Local LLM
+
+🚀 No external API required
 
 ---
 
