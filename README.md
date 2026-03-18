@@ -39,3 +39,10 @@ cd ai-pr-review-bot
 pip install -r requirements.txt
 
 python cli/review_pr.py
+
+## Roadmap
+
+- [ ] PR summary generation
+- [ ] inline code suggestions
+- [ ] multi-language support
+- [ ] plugin system
