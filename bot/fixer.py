@@ -1,4 +1,36 @@
-def generate_fix(llm, code, issue):
+from queue import Queue
+from threading import Thread
+
+DEFAULT_LLM_TIMEOUT_SECONDS = 30
+
+
+def _call_llm_with_timeout(llm, prompt, timeout_seconds=DEFAULT_LLM_TIMEOUT_SECONDS):
+    """Call an LLM function with a bounded wait and clear error handling."""
+    if timeout_seconds is None:
+        return llm(prompt)
+
+    result_queue = Queue(maxsize=1)
+
+    def run_llm():
+        try:
+            result_queue.put((True, llm(prompt)))
+        except Exception as exc:
+            result_queue.put((False, exc))
+
+    worker = Thread(target=run_llm, daemon=True)
+    worker.start()
+    worker.join(timeout_seconds)
+
+    if worker.is_alive():
+        raise TimeoutError(f"LLM call timed out after {timeout_seconds} seconds")
+
+    succeeded, result = result_queue.get()
+    if succeeded:
+        return result
+    raise result
+
+
+def generate_fix(llm, code, issue, timeout_seconds=DEFAULT_LLM_TIMEOUT_SECONDS):
     prompt = f"""
 You are a senior engineer.
 
@@ -12,9 +44,13 @@ Code:
 
 Return ONLY the fixed code.
 """
-    return llm(prompt)
+    try:
+        return _call_llm_with_timeout(llm, prompt, timeout_seconds)
+    except Exception:
+        return code
 
-def validate_fix(llm, original, fix):
+
+def validate_fix(llm, original, fix, timeout_seconds=DEFAULT_LLM_TIMEOUT_SECONDS):
     prompt = f"""
 Check if the fix correctly resolves the issue.
 
@@ -26,8 +62,13 @@ Fix:
 
 Answer YES or NO only.
 """
-    result = llm(prompt)
-    return "YES" in result.upper()
+    try:
+        result = _call_llm_with_timeout(llm, prompt, timeout_seconds)
+    except Exception:
+        return False
+
+    return "YES" in str(result).upper()
+
 
 def format_suggestion(fixed_code):
     return f"""```suggestion
