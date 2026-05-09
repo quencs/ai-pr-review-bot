@@ -45,12 +45,12 @@ python cli/review_pr.py
 
 ## Core Functions
 
-### `generate_fix(code, issue)`
+### `generate_fix(llm, code, issue, timeout_seconds=30)`
 
 Generates a fixed version of code using the LLM based on the identified issue.
 
 ```python
-def generate_fix(code, issue):
+def generate_fix(llm, code, issue, timeout_seconds=30):
     prompt = f"""
 You are a senior engineer.
 
@@ -65,15 +65,16 @@ Code:
 Return ONLY the fixed code.
 No explanation.
 """
-    return ask_llm(prompt)
+    return ask_llm(prompt)  # Returns original code if the LLM fails or times out
 ```
 
 **Parameters:**
 - `code` (str): The problematic code to fix
 - `issue` (str): Description of the issue to fix
+- `timeout_seconds` (int | float | None): Maximum time to wait for the LLM call. Use `None` to disable the timeout.
 
 **Returns:**
-- (str): Fixed code from the LLM
+- (str): Fixed code from the LLM, or the original code if the LLM call fails or times out
 
 ### `format_suggestion(fixed_code)`
 
